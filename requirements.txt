@@ -1,4 +1,10 @@
-asgiref==3.10.0
+asgiref==3.11.0
 Django==5.2.8
+django-ckeditor==6.7.3
+django-js-asset==3.1.2
+djitellopy==2.4.0
+numpy==1.24.0
+opencv-python==4.6.0.66
+pillow==12.0.0
 sqlparse==0.5.3
 tzdata==2025.2
