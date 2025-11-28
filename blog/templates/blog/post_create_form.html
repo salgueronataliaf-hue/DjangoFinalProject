@@ -1,0 +1,29 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block titulo %}Crear Nuevo Post{% endblock %}
+
+{% block contenido %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <h1 class="mb-4">Escribir un Nuevo Artículo</h1>
+            
+            <div class="card shadow">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {{ form.media }} 
+                        
+                        {{ form.as_p }}
+
+                        <button type="submit" class="btn btn-primary mt-3">Publicar Post</button>
+                        <a href="{% url 'post_list' %}" class="btn btn-secondary mt-3">Cancelar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

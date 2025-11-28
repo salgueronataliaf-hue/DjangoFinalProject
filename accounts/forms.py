@@ -1,22 +1,40 @@
-# accounts/forms.py
-
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
-from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile 
+from django.contrib.auth.models import User # Importa el modelo User de Django
 
-# 1. Formulario para editar el modelo User (datos básicos)
-class UserEditForm(forms.ModelForm):
-    # Sobrescribimos el campo 'email' para que sea opcional, si es necesario
+# ----------------------------------------------------
+# 1. Formulario de Registro (el que te está dando error)
+# ----------------------------------------------------
+class UserRegisterForm(UserCreationForm):
+    # Añade los campos que quieras registrar (ej. email)
     email = forms.EmailField(required=True) 
 
-    class Meta:
+    class Meta(UserCreationForm.Meta):
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name']
-        # Los campos 'first_name' y 'last_name' son los que pide la consigna (nombre, apellido)
+        fields = UserCreationForm.Meta.fields + ('email',)
 
-# 2. Formulario para editar el modelo Profile (biografía, avatar)
-class ProfileEditForm(forms.ModelForm):
+# ----------------------------------------------------
+# 2. Formulario de Edición de Usuario (necesario para profile_edit_view)
+# ----------------------------------------------------
+class UserEditForm(UserChangeForm):
+    # Excluye la contraseña, que se cambia en otra vista
+    password = None 
+    
+    class Meta:
+        model = User # Debe apuntar al modelo User de Django
+        # Campos que el usuario puede editar directamente (email, nombre)
+        fields = ['email', 'first_name', 'last_name'] 
+
+# ----------------------------------------------------
+# 3. Formulario de Edición de Perfil (para bio y avatar)
+# ----------------------------------------------------
+class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        # Usamos 'biografia' y 'avatar' que definimos en models.py
-        fields = ['biografia', 'avatar']
+        # Campos del modelo Profile que se van a editar
+        fields = ['bio', 'avatar'] 
+
+        widgets = {
+            'bio': forms.Textarea(attrs={'rows': 4}),
+        }

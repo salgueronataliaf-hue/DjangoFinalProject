@@ -1,11 +1,32 @@
 from django.urls import path
-from . import views
+from . import views # Para home_view y about_view
+from .views import (
+    PostListView, 
+    PostDetailView, 
+    PostCreateView, 
+    PostUpdateView, 
+    PostDeleteView
+)
+
 urlpatterns = [
-    # path(URL, VISTA, NOMBRE_INTERNO)
-    path('', views.inicio, name='inicio'), 
-    path('autor/cargar/', views.cargar_autor, name='cargar_autor'),
-    path('categoria/cargar/', views.cargar_categoria, name='cargar_categoria'),
-    path('post/cargar/', views.cargar_post, name='cargar_post'),
-    path('post/buscar/', views.busqueda_post, name='busqueda_post'),
-    path('posts/', views.listar_posts, name='listar_posts'), 
+    # VISTAS GENERALES (FVB)
+    path('', views.home_view, name='home'),             # Usado para el home (puede ser tu lista principal)
+    path('acerca-de/', views.about_view, name='about'), # Requisito: Vista "Acerca de mí"
+    
+    # VISTAS DE POSTS (CRUD - CBV)
+    
+    # 1. LISTAR POSTS (Usaremos la misma vista para la lista principal)
+    path('pages/', PostListView.as_view(), name='post_list'),
+    
+    # 2. CREAR POST (Requiere LoginRequiredMixin)
+    path('pages/nuevo/', PostCreateView.as_view(), name='post_create'),
+    
+    # 3. DETALLE DE POST
+    path('pages/<int:pk>/', PostDetailView.as_view(), name='post_detail'),
+    
+    # 4. EDITAR POST (Requiere LoginRequiredMixin + UserPassesTestMixin)
+    path('pages/<int:pk>/editar/', PostUpdateView.as_view(), name='post_edit'),
+    
+    # 5. BORRAR POST (Requiere LoginRequiredMixin + UserPassesTestMixin)
+    path('pages/<int:pk>/borrar/', PostDeleteView.as_view(), name='post_delete'),
 ]

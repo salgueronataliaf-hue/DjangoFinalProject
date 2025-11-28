@@ -1,0 +1,19 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block titulo %}Editar Post: {{ post.titulo }}{% endblock %}
+
+{% block contenido %}
+    <h1 class="mb-4">Editar Post: {{ post.titulo }}</h1>
+    
+    {# enctype="multipart/form-data" es crucial para la imagen #}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {{ form.media }} 
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-success mt-3">Guardar Cambios</button>
+        <a href="{% url 'post_detail' pk=post.pk %}" class="btn btn-secondary mt-3">Cancelar</a>
+    </form>
+{% endblock %}

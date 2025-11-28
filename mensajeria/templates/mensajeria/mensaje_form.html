@@ -1,0 +1,29 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block titulo %}Enviar Mensaje{% endblock %}
+
+{% block contenido %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="mb-4">Enviar Nuevo Mensaje</h1>
+            
+            <div class="card shadow">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {{ form.as_p }}
+
+                        <button type="submit" class="btn btn-primary mt-3">
+                            <i class="fas fa-paper-plane"></i> Enviar Mensaje
+                        </button>
+                        <a href="{% url 'bandeja_entrada' %}" class="btn btn-secondary mt-3">Cancelar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,19 +1,24 @@
 from django.db import models
-from django.contrib.auth.models import User # Importamos el modelo User de Django
+from django.contrib.auth.models import User
 
 class Profile(models.Model):
-    # Enlace uno-a-uno con el modelo de Usuario de Django
+    # Relación uno a uno: Un perfil está asociado a un solo usuario
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     
-    # Campos adicionales del perfil
-    # blank=True y null=True permiten que estos campos no sean obligatorios al inicio
-    nombre = models.CharField(max_length=50, blank=True, null=True)
-    apellido = models.CharField(max_length=50, blank=True, null=True)
-    biografia = models.TextField(blank=True, null=True)
+    # Campo para la biografía (TextField permite texto largo)
+    bio = models.TextField(
+        max_length=500, 
+        blank=True,  # Permite dejar el campo vacío en formularios
+        null=True    # Permite que el campo sea NULL en la base de datos
+    )
     
-    # Campo de Imagen (Avatar)
-    # upload_to='avatars/' guarda las imágenes en media/avatars/
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    # Campo para la imagen de perfil (avatar)
+    avatar = models.ImageField(
+        upload_to='avatars/', # Las imágenes se guardarán en MEDIA_ROOT/avatars/
+        null=True, 
+        blank=True
+    )
 
     def __str__(self):
+        # Muestra el nombre de usuario del perfil en el panel de administración
         return f'Perfil de {self.user.username}'

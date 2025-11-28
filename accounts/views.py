@@ -1,85 +1,102 @@
-# accounts/views.py
-
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required 
-from .forms import UserEditForm, ProfileEditForm 
-from .models import Profile 
+from django.contrib.auth.decorators import login_required
+from blog.models import Post # Importa el modelo Post
+from .forms import UserRegisterForm, UserEditForm, ProfileForm
+from .models import Profile # Importa el modelo Profile
 
-# VISTA DE REGISTRO (SIGNUP)
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+# --- VISTA DE REGISTRO ---
+def register_request(request):
+    if request.method == "POST":
+        form = UserRegisterForm(request.POST)
         if form.is_valid():
+            # Guarda el nuevo usuario
             user = form.save()
-            # Loguear al usuario inmediatamente después del registro
-            login(request, user)
-            messages.success(request, f"¡Bienvenido, {user.username}! Registro exitoso.")
-            return redirect('inicio') 
-        else:
-            messages.error(request, "Error en el formulario de registro.")
-    else:
-        form = UserCreationForm()
-        
-    return render(request, 'accounts/register.html', {'form': form})
+            # Crea un perfil asociado (Signal podría hacer esto automáticamente)
+            Profile.objects.create(user=user) 
+            messages.success(request, "Registro exitoso. Ahora puedes iniciar sesión.")
+            return redirect("login")
+        messages.error(request, "Registro no válido. Información incorrecta o usuario ya existe.")
+    
+    form = UserRegisterForm()
+    return render(request, "accounts/register.html", {"register_form": form})
 
-# VISTA DE LOGIN
+# --- VISTA DE LOGIN ---
 def login_request(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(request, username=username, password=password)
+            user = authenticate(username=username, password=password)
             
             if user is not None:
                 login(request, user)
-                messages.success(request, f"¡Bienvenido de vuelta, {username}!")
-                return redirect('inicio')
+                messages.info(request, f"Hola {username}! Has iniciado sesión.")
+                return redirect("/") # Redirige al home
             else:
-                messages.error(request, "Usuario o contraseña incorrectos.")
+                messages.error(request, "Nombre de usuario o contraseña inválidos.")
         else:
-            messages.error(request, "Usuario o contraseña incorrectos.")
-    
+            messages.error(request, "Nombre de usuario o contraseña inválidos.")
+            
     form = AuthenticationForm()
-    return render(request, 'accounts/login.html', {'form': form})
+    return render(request, "accounts/login.html", {"login_form": form})
 
-# VISTA DE LOGOUT
-def logout_view(request):
+# --- VISTA DE LOGOUT ---
+@login_required # Solo permite cerrar sesión si ya estás logueado
+def logout_request(request):
     logout(request)
-    messages.info(request, "Has cerrado sesión correctamente.")
-    return redirect('inicio')
-@login_required # Solo usuarios logueados pueden acceder
-def profile_view(request):
-    # El perfil se recupera automáticamente gracias al signal
-    return render(request, 'accounts/profile_view.html')
+    messages.info(request, "Has cerrado sesión exitosamente.")
+    return redirect("/")
 
-
-# VISTA DE EDICIÓN DE PERFIL (Update profile)
+# --- VISTA DE PERFIL (LECTURA) ---
 @login_required
-def profile_edit(request):
-    profile, created = Profile.objects.get_or_create(user=request.user) 
+def profile_view(request):
+    try:
+        # Intenta obtener el perfil del usuario actual (si existe)
+        profile = request.user.profile
+    except Profile.DoesNotExist:
+        # Si no existe, crea uno (esto no debería pasar si se usa signals o la creación en register_request)
+        profile = Profile.objects.create(user=request.user)
 
+    # CORRECCIÓN CLAVE: Usamos 'creador' para filtrar los posts, no 'author'
+    user_posts = Post.objects.filter(creador=request.user).order_by('-fecha_creacion')
+
+    context = {
+        'profile': profile,
+        'user_posts': user_posts,
+    }
+    return render(request, 'accounts/profile.html', context)
+
+# --- VISTA DE EDICIÓN DE PERFIL ---
+@login_required
+def profile_edit_view(request):
+    try:
+        profile = request.user.profile
+    except Profile.DoesNotExist:
+        profile = Profile.objects.create(user=request.user)
+    
     if request.method == 'POST':
-        # Instanciamos los formularios con los datos POST y los archivos (FILES)
+        # Instancia ambos formularios con los datos POST y los archivos si existen (para el avatar)
         user_form = UserEditForm(request.POST, instance=request.user)
-        # IMPORTANTE: Pasamos instance=profile y request.FILES para la imagen/avatar
-        profile_form = ProfileEditForm(request.POST, request.FILES, instance=profile)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
 
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, 'Tu perfil ha sido actualizado con éxito.')
-            return redirect('profile_view') # Redirige a la vista del perfil
+            messages.success(request, 'Tu perfil se ha actualizado correctamente.')
+            return redirect('profile_view')
         else:
-            messages.error(request, 'Error al actualizar tu perfil.')
+            messages.error(request, 'Por favor, corrige los errores en el formulario.')
     else:
-        # Petición GET: Mostramos los formularios con los datos actuales
+        # Si es un GET, instancia los formularios con los datos actuales
         user_form = UserEditForm(instance=request.user)
-        profile_form = ProfileEditForm(instance=profile)
-
-    return render(request, 
-                  'accounts/profile_edit.html', 
-                  {'user_form': user_form, 'profile_form': profile_form})
+        profile_form = ProfileForm(instance=profile)
+    
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form
+    }
+    return render(request, 'accounts/profile_edit.html', context)
