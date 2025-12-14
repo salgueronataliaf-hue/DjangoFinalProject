@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Mensaje{% endblock %}
+{% block content %}
+<h2>{{ object.asunto }}</h2>
+<p><strong>De:</strong> {{ object.remitente }}</p>
+<p><strong>Para:</strong> {{ object.destinatario }}</p>
+<p>{{ object.cuerpo|linebreaks }}</p>
+
+<form method="post" action="{% url 'mensajeria:borrar' object.pk %}">
+  {% csrf_token %}
+  <button class="btn btn-danger" type="submit">Eliminar</button>
+</form>
+{% endblock %}

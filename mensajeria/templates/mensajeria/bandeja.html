@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Bandeja{% endblock %}
+{% block content %}
+<h2>Bandeja de entrada</h2>
+{% if mensajes %}
+  <ul class="list-group">
+    {% for m in mensajes %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <a href="{% url 'mensajeria:detalle' m.pk %}"><strong>{{ m.asunto }}</strong></a>
+          <div>De: {{ m.remitente }} - {{ m.creado|date:"SHORT_DATETIME_FORMAT" }}</div>
+        </div>
+        <div>
+          {% if not m.leido %}<span class="badge bg-primary">Nuevo</span>{% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+
+  {% if is_paginated %}
+    <nav aria-label="Page navigation">
+      <ul class="pagination mt-3">
+        {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+        {% endif %}
+        <li class="page-item disabled"><a class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</a></li>
+        {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+{% else %}
+  <p>No hay mensajes aún.</p>
+{% endif %}
+
+<a class="btn btn-primary mt-3" href="{% url 'mensajeria:enviar' %}">Enviar mensaje</a>
+{% endblock %}

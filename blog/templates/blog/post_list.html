@@ -1,95 +1,44 @@
-{% extends 'blog/base.html' %}
+{% extends 'base.html' %} 
 {% load static %}
 
-{% block titulo %}Listado de Publicaciones{% endblock %}
+{% block title %}Listado de Publicaciones{% endblock %}
 
-{% block contenido %}
+{% block content %} 
 <div class="container mt-5">
+    
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Explora Todas las Páginas</h1>
         
         {% if user.is_authenticated %}
-            <a href="{% url 'post_create' %}" class="btn btn-primary">
+            <a href="{% url 'post_create' %}" class="btn btn-success">
                 <i class="fas fa-plus-circle"></i> Crear Nuevo Post
             </a>
         {% endif %}
     </div>
-
-    <hr>
     
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
+    <hr>
 
-    {% if no_posts_message %}
-        <div class="alert alert-info text-center" role="alert">
-            {{ no_posts_message }}
-        </div>
-    {% elif posts %}
-        <div class="row">
-            {% for post in posts %}
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 shadow-sm">
+    {% if posts %}
+        {% for post in posts %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'post_detail' post.pk %}">{{ post.titulo }}</a>
+                    </h5>
                     
-                    {% if post.imagen %}
-                        <img src="{{ post.imagen.url }}" class="card-img-top" 
-                             alt="{{ post.titulo }}" style="height: 200px; object-fit: cover;">
-                    {% else %}
-                        <img src="{% static 'blog/img/placeholder.png' %}" class="card-img-top" 
-                             alt="Placeholder" style="height: 200px; object-fit: cover;">
-                    {% endif %}
-                    
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ post.titulo }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Por: {{ post.creador.username }}</h6>
-                        
-                        <p class="card-text">{{ post.subtitulo|truncatechars:100 }}</p>
-                        
-                        <div class="mt-auto">
-                            <a href="{% url 'post_detail' post.pk %}" class="btn btn-sm btn-outline-info">
-                                Leer más
-                            </a>
-
-                            {% if user.is_authenticated and user == post.creador %}
-                                <a href="{% url 'post_edit' post.pk %}" class="btn btn-sm btn-outline-warning ms-2">
-                                    Editar
-                                </a>
-                                <a href="{% url 'post_delete' post.pk %}" class="btn btn-sm btn-outline-danger">
-                                    Borrar
-                                </a>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="card-footer text-muted">
-                        Publicado el {{ post.fecha_creacion|date:"d M, Y" }}
-                    </div>
+                    <p class="card-text">{{ post.contenido|truncatewords:30 }}</p>
+                    <small class="text-muted">Autor: {{ post.autor.username }}</small>
                 </div>
             </div>
-            {% endfor %}
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info">
+            No hay publicaciones aún. 
+            {% if user.is_authenticated %}
+                Sé el primero en <a href="{% url 'post_create' %}">crear una!</a>
+            {% endif %}
         </div>
-        
     {% endif %}
-
-    {% comment %}
-    {% if is_paginated %}
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                {% if page_obj.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
-                {% endif %}
-                <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }}</a></li>
-                {% if page_obj.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-    {% endif %}
-    {% endcomment %}
 
 </div>
 {% endblock %}

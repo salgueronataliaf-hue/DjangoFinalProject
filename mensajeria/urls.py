@@ -1,10 +1,7 @@
 from django.urls import path
-from .views import bandeja_entrada_view, MensajeCreateView
+from . import views
 
 urlpatterns = [
-    # Bandeja de Entrada (vista FVB)
-    path('', bandeja_entrada_view, name='bandeja_entrada'),
-    
-    # Enviar Nuevo Mensaje (vista CBV)
-    path('nuevo/', MensajeCreateView.as_view(), name='enviar_mensaje'),
+    path('', views.bandeja_entrada, name='bandeja_entrada'),
+    path('enviar/', views.enviar_mensaje, name='enviar_mensaje'),
 ]

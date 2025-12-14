@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>¿Confirmar eliminación?</h3>
+<p>Asunto: {{ mensaje.asunto }}</p>
+<form method="post">
+  {% csrf_token %}
+  <button class="btn btn-danger" type="submit">Sí, borrar</button>
+  <a href="{% url 'mensajeria:bandeja' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

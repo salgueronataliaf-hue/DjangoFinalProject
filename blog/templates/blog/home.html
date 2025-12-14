@@ -1,33 +1,10 @@
-{% extends 'blog/base.html' %}
-{% load static %}
+{% extends "base.html" %}
 
-{% block titulo %}Página Principal - Mi Blog{% endblock %}
+{% block title %}Inicio{% endblock %}
 
-{% block contenido %}
-<header class="masthead" style="background-image: url('{% static 'blog/img/home-bg.jpg' %}')">
-    <div class="container position-relative px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-            <div class="col-md-10 col-lg-8 col-xl-7">
-                <div class="site-heading">
-                    <h1>Blog de {{ user.username|default:"Invitado" }}</h1>
-                    <span class="subheading">Tu espacio para compartir ideas.</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+{% block content %}
+<h1>Bienvenida/o al blog</h1>
 
-<div class="container px-4 px-lg-5">
-    <div class="row gx-4 gx-lg-5 justify-content-center">
-        <div class="col-md-10 col-lg-8 col-xl-7">
-            <h2 class="section-heading mt-5">Publicaciones Recientes</h2>
-            <p>¡Bienvenido/a! Para ver todas las publicaciones y comenzar a escribir, haz clic en el botón.</p>
-            
-            <a href="{% url 'post_list' %}" class="btn btn-secondary btn-lg mb-5">
-                Ir a todas las páginas ➡️
-            </a>
+<p>Si ves esto, Django está funcionando correctamente 🎉</p>
 
-            </div>
-    </div>
-</div>
 {% endblock %}

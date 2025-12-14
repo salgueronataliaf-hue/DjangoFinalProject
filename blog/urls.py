@@ -1,32 +1,21 @@
+# blog/urls.py
+
 from django.urls import path
-from . import views # Para home_view y about_view
-from .views import (
-    PostListView, 
-    PostDetailView, 
-    PostCreateView, 
-    PostUpdateView, 
-    PostDeleteView
-)
+from . import views
 
 urlpatterns = [
-    # VISTAS GENERALES (FVB)
-    path('', views.home_view, name='home'),             # Usado para el home (puede ser tu lista principal)
-    path('acerca-de/', views.about_view, name='about'), # Requisito: Vista "Acerca de mí"
+    # 1. LISTADO (Pages)
+    path('', views.PostListView.as_view(), name='post_list'), 
     
-    # VISTAS DE POSTS (CRUD - CBV)
+    # 2. CREAR POST (Funciona correctamente)
+    path('new/', views.PostCreateView.as_view(), name='post_create'),
     
-    # 1. LISTAR POSTS (Usaremos la misma vista para la lista principal)
-    path('pages/', PostListView.as_view(), name='post_list'),
+    # 3. DETALLE DEL POST (DEBE ser dinámica para que funcione el enlace)
+    path('<int:pk>/', views.PostDetailView.as_view(), name='post_detail'), 
     
-    # 2. CREAR POST (Requiere LoginRequiredMixin)
-    path('pages/nuevo/', PostCreateView.as_view(), name='post_create'),
+    # 4. ACTUALIZAR POST (Necesaria para los botones en post_detail.html)
+    path('<int:pk>/edit/', views.PostUpdateView.as_view(), name='post_update'),
     
-    # 3. DETALLE DE POST
-    path('pages/<int:pk>/', PostDetailView.as_view(), name='post_detail'),
-    
-    # 4. EDITAR POST (Requiere LoginRequiredMixin + UserPassesTestMixin)
-    path('pages/<int:pk>/editar/', PostUpdateView.as_view(), name='post_edit'),
-    
-    # 5. BORRAR POST (Requiere LoginRequiredMixin + UserPassesTestMixin)
-    path('pages/<int:pk>/borrar/', PostDeleteView.as_view(), name='post_delete'),
+    # 5. ELIMINAR POST (Necesaria para los botones en post_detail.html)
+    path('<int:pk>/delete/', views.PostDeleteView.as_view(), name='post_delete'),
 ]

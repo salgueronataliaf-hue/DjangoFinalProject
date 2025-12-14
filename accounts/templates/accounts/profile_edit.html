@@ -1,29 +1,33 @@
-{% extends 'blog/base.html' %}
-{% load static %}
+{# accounts/templates/accounts/editar_perfil.html #}
+{% extends "base.html" %}
 
-{% block titulo %}Editar Perfil{% endblock %}
+{% block title %}Editar Perfil{% endblock %}
 
-{% block contenido %}
-    <h1 class="mb-4">Editar Datos y Perfil</h1>
-
+{% block content %}
+<div class="container mt-5">
+    <h1>Editar Perfil</h1>
+    <hr>
+    
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            <div class="alert alert-success">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
-    {# IMPORTANTE: enctype="multipart/form-data" es necesario para subir archivos (imágenes) #}
-    <form method="POST" enctype="multipart/form-data">
+    {# Importante: Usar enctype="multipart/form-data" para subir archivos (avatar) #}
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         
-        <h2>Datos del Usuario (Django User)</h2>
+        {# Formulario de datos de Usuario (Nombre, Apellido, Email) #}
+        <h3>Datos de Cuenta</h3>
         {{ user_form.as_p }}
-
-        <hr>
-        <h2>Datos del Perfil (Avatar y Biografía)</h2>
+        
+        {# Formulario de datos de Perfil (Avatar, Biografía, Link) #}
+        <h3 class="mt-4">Datos del Perfil</h3>
         {{ profile_form.as_p }}
 
-        <button type="submit" class="btn btn-success">Guardar Cambios</button>
-        <a href="{% url 'profile_view' %}" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-success mt-3">Guardar Cambios</button>
+        <a href="{% url 'profile_view' %}" class="btn btn-secondary mt-3">Cancelar</a>
     </form>
+</div>
 {% endblock %}

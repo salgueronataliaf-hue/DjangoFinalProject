@@ -4,39 +4,49 @@ Django settings for proyecto_principal project.
 
 from pathlib import Path
 
+# ***************************************************************
+# 1. PATH CONFIGURATION (Soluciona NameError: name 'BASE_DIR' is not defined)
+# ***************************************************************
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Sube dos niveles para llegar a la carpeta 'primera-pagina'
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+# ***************************************************************
+# 2. SECURITY WARNING: keep the secret key used in production secret!
+# ***************************************************************
 
-# WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8&w8g_j9!^@0$z0c32o-@3o(b-!p!t6)1_n6w1j+t^t(q3d_a=' # Reemplaza por tu clave secreta real
+# CAMBIAR ESTA CLAVE por una única y segura en producción
+SECRET_KEY = 'django-insecure-tu_clave_secreta_aqui_para_el_proyecto-final'
 
-# WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
 
-# Application definition
+# ***************************************************************
+# 3. APPLICATION DEFINITION
+# ***************************************************************
 
 INSTALLED_APPS = [
+    # Django default apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    # Mis Apps
-    'blog',
-    'accounts',
-    
-    # Terceros
+
+    # Third-party apps
     'ckeditor',
-    'mensajeria'
+    'ckeditor_uploader',
+
+    # My apps
+    'accounts',
+    'blog',
+    'mensajeria',
 ]
 
 MIDDLEWARE = [
@@ -51,13 +61,20 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'proyecto_principal.urls'
 
+
+# ***************************************************************
+# 4. TEMPLATES CONFIGURATION (Incluye la carpeta global 'templates')
+# ***************************************************************
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'blog' / 'templates'], # Directorio de plantillas a nivel de proyecto
+        # Incluye la carpeta global 'templates' en la raíz del proyecto
+        'DIRS': [BASE_DIR / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -69,8 +86,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'proyecto_principal.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+# ***************************************************************
+# 5. DATABASE CONFIGURATION
+# ***************************************************************
 
 DATABASES = {
     'default': {
@@ -80,8 +98,17 @@ DATABASES = {
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+# ***************************************************************
+# 6. AUTHENTICATION (Redirecciones de login/logout)
+# ***************************************************************
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login' # o 'home' si prefieres
+LOGIN_URL = '/accounts/login/' # URL donde está el formulario de login
+
+
+# ***************************************************************
+# 7. PASSWORD VALIDATION
+# ***************************************************************
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -99,10 +126,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
+# ***************************************************************
+# 8. INTERNATIONALIZATION
+# ***************************************************************
 
-LANGUAGE_CODE = 'en-us' # Puedes cambiar a 'es' si quieres el idioma por defecto en español
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
@@ -111,50 +139,22 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images, etc.)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
+# ***************************************************************
+# 9. STATIC & MEDIA FILES (Archivos CSS/JS e imágenes/archivos subidos)
+# ***************************************************************
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles' # Donde Django recolectará los archivos estáticos en producción
-STATICFILES_DIRS = [
-    # Puedes añadir directorios estáticos a nivel de proyecto si es necesario
-]
+# STATICFILES_DIRS = [BASE_DIR / 'static']  # Opcional, si usas carpeta static global
 
-
-# Configuración para archivos media (imágenes subidas por el usuario)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# Configuración de URLs de autenticación
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-LOGIN_URL = '/accounts/login/' # Define dónde está la vista de login
-
-
-# ----------------------------------------------------
-# CONFIGURACIÓN DE CKEDITOR 
-# ----------------------------------------------------
-# Necesario para especificar dónde se subirán los archivos (relativo a MEDIA_ROOT)
+# CKEDITOR CONFIGURATION
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 
-# proyecto_principal/settings.py (Sección CKEDITOR_CONFIGS)
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'Custom',
-        'height': 300,
-        'width': '100%',
-        'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline', '-', 'Link', 'Unlink'],
-            ['Format', 'Font', 'FontSize'],
-            ['TextColor', 'BGColor'],
-            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-        ],
-    }
-}
+
+# ***************************************************************
+# 10. DEFAULT PRIMARY KEY FIELD TYPE
+# ***************************************************************
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

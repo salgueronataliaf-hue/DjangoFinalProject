@@ -1,37 +1,30 @@
-{% extends 'blog/base.html' %}
-{% load static %}
+{% extends "base.html" %}
 
-{% block titulo %}Mi Perfil{% endblock %}
+{% block title %}Mi Perfil{% endblock %}
 
-{% block contenido %}
-    <h1 class="mb-4">Mi Perfil de Usuario</h1>
+{% block content %}
+<div class="container mt-5">
+    <h1>Perfil de {{ user.username }}</h1>
+    <hr>
     
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
+    {% if user.profile.avatar %}
+        <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="img-thumbnail mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+    {% else %}
+        <p>Aún no has subido un avatar.</p>
     {% endif %}
 
-    <div class="row">
-        <div class="col-md-4 text-center">
-            {% if user.profile.avatar %}
-                <img src="{{ user.profile.avatar.url }}" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
-            {% else %}
-                
-                <img src="{% static 'img/default_avatar.png' %}" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar predeterminado">
-            {% endif %}
-            
-            <a href="{% url 'profile_edit' %}" class="btn btn-warning mt-2">Editar Perfil</a>
-        </div>
-
-        <div class="col-md-8">
-            <p><strong>Usuario:</strong> {{ user.username }}</p>
-            <p><strong>Nombre:</strong> {{ user.first_name|default:"(No definido)" }}</p>
-            <p><strong>Apellido:</strong> {{ user.last_name|default:"(No definido)" }}</p>
-            <p><strong>Email:</strong> {{ user.email }}</p>
-            <hr>
-            <h4>Biografía:</h4>
-            <p>{{ user.profile.biografia|default:"Aún no has agregado una biografía." }}</p>
-        </div>
-    </div>
+    <p><strong>Nombre Completo:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    
+    {% if user.profile.biografia %}
+        <p><strong>Biografía:</strong> {{ user.profile.biografia }}</p>
+    {% endif %}
+    
+    {% if user.profile.link %}
+        <p><strong>Link Personal:</strong> <a href="{{ user.profile.link }}">{{ user.profile.link }}</a></p>
+    {% endif %}
+    
+    <a href="{% url 'profile_edit' %}" class="btn btn-primary mt-3">Editar Perfil</a>
+    <a href="{% url 'change_password' %}" class="btn btn-secondary mt-3">Cambiar Contraseña</a>
+</div>
 {% endblock %}

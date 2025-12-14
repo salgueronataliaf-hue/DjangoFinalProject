@@ -1,20 +1,43 @@
-{% extends 'blog/base.html' %}
+{# accounts/templates/accounts/register.html (CÓDIGO CORREGIDO) #}
+{% extends 'base.html' %} 
+{# La ruta correcta es generalmente 'base.html' si está en la carpeta templates/ global #}
 {% load static %}
 
-{% block titulo %}Registro de Usuario{% endblock %}
+{% block title %}Registro de Usuario{% endblock %}
 
-{% block contenido %}
-    <h1 class="mb-4">Registro</h1>
+{% block content %}
+{# ¡CORRECCIÓN CLAVE! Usa 'content' en lugar de 'contenido' #}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h1 class="card-title text-center mb-4">Crear Cuenta</h1>
+                        
+                        {# Mensajes (si los hay) #}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Registrarse</button>
-    </form>
-{% endblock %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            
+                            {# Renderiza los campos del formulario #}
+                            {{ form.as_p }} 
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">Registrarse</button>
+                            </div>
+                        </form>
+                        
+                        <p class="mt-3 text-center">
+                            ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

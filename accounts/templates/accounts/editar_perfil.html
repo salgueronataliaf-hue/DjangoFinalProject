@@ -1,0 +1,33 @@
+{# accounts/templates/accounts/editar_perfil.html #}
+{% extends "base.html" %}
+
+{% block title %}Editar Perfil{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Editar Perfil</h1>
+    <hr>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {# Importante: Usar enctype="multipart/form-data" para subir archivos (avatar) #}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {# Formulario de datos de Usuario (Nombre, Apellido, Email) #}
+        <h3>Datos de Cuenta</h3>
+        {{ user_form.as_p }}
+        
+        {# Formulario de datos de Perfil (Avatar, Biografía, Link) #}
+        <h3 class="mt-4">Datos del Perfil</h3>
+        {{ profile_form.as_p }}
+
+        <button type="submit" class="btn btn-success mt-3">Guardar Cambios</button>
+        <a href="{% url 'profile_view' %}" class="btn btn-secondary mt-3">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

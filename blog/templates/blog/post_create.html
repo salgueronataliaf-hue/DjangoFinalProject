@@ -1,24 +1,21 @@
-{% extends 'blog/base.html' %}
-{% load static %}
+{% extends 'base.html' %} 
 
-{% block titulo %}Crear Nuevo Post{% endblock %}
+{% block title %}Crear Nuevo Post{% endblock %}
 
-{% block contenido %}
-    <h1 class="mb-4">Escribir un Nuevo Post</h1>
-    
-    {# La etiqueta form debe incluir enctype="multipart/form-data" para subir la imagen #}
-    <form method="POST" enctype="multipart/form-data">
+{% block content %}
+<div class="container mt-5">
+    <h1>Crear Nuevo Post</h1>
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         
-        {# Necesario para que el editor CKEditor se muestre #}
-        {{ form.media }}
+        {# Renderiza los campos del formulario (título, contenido) #}
+        {{ form.media }} 
+        {# Esto es crucial si usas CKEditor/widgets personalizados #}
         
-        {# Renderiza los campos del formulario #}
-        {{ form.as_p }}
-
+        {{ form.as_p }} 
         
-        <button type="submit" class="btn btn-success mt-3">Publicar Post</button>
-        
-        <a href="{% url 'post_list' %}" class="btn btn-secondary mt-3">Cancelar</a>
+        <button type="submit" class="btn btn-primary">Publicar</button>
+        <a href="{% url 'post_list' %}" class="btn btn-secondary">Cancelar</a>
     </form>
+</div>
 {% endblock %}

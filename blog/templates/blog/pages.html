@@ -1,0 +1,13 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+<h1>Páginas</h1>
+
+{% for page in pages %}
+  <h2>{{ page.titulo }}</h2>
+  <p>{{ page.contenido }}</p>
+{% empty %}
+  <p>No hay páginas aún.</p>
+{% endfor %}
+
+{% endblock %}

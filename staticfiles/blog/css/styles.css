@@ -1,0 +1,19 @@
+/* ================================================= */
+/* ESTO ES SOLO CÓDIGO DE PRUEBA */
+/* ================================================= */
+
+body {
+    padding-top: 5rem; /* Ajuste para que el cuerpo no esté debajo de la barra de navegación */
+    background-color: #f8f9fa; /* Color de fondo muy claro */
+}
+
+/* Prueba de color de texto en el body */
+p {
+    color: #495057; /* Un gris oscuro */
+}
+
+/* Prueba visual: Poner un borde rojo al título del sitio */
+.navbar-brand {
+    border: 2px solid red; 
+    padding: 5px;
+}
